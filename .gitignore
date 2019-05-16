@@ -1,0 +1,37 @@
+# Created by https://www.gitignore.io/api/scala,sbt
+
+### Scala ###
+*.class
+*.log
+.oracle_jre_usage/
+
+# sbt specific
+# http://www.scala-sbt.org/release/docs/Getting-Started/Directories.html#configuring-version-control
+.cache
+.history
+.lib/
+dist/*
+target/
+.ivy2/
+.sbt/
+lib_managed/
+src_managed/
+project/boot/
+project/plugins/project/
+.scala_history
+
+# Scala-IDE specific
+.scala_dependencies
+.worksheet
+.idea/
+.idea_modules/
+
+# OS specific
+.DS_STORE
+.bash_history
+
+# Ignoring plain text version of encrypted files
+config/production
+config/development
+.idea
+.kube/
