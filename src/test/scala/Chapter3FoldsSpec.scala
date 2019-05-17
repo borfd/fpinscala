@@ -44,7 +44,7 @@ class Chapter3FoldsSpec extends Specification { def is =
   def e4 =
     Chapter3Lists.foldLeftWithFoldRight(threeFourFiveList, 10)((acc, curr) => acc + curr) must equalTo(10)
 
-  def e4 =
+  def e5 =
     Chapter3Lists.foldRightWithFoldLeft(threeFourFiveList, 10)((acc, curr) => acc + curr) must equalTo(10)
 
 }

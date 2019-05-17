@@ -27,6 +27,7 @@ object Chapter3Lists {
   }
 
   // FOLD
+
   def length[A](as: List[A]): Int = ???
 
   def foldLeft[A, B](as: List[A], z: B)(f: (B, A) => B): B = ???
@@ -35,11 +36,11 @@ object Chapter3Lists {
 
   def foldRightWithFoldLeft[A, B](as: List[A], z: B)(f: (A, B) => B): B = ???
 
+  // MAP + FILTER
+
   def listPlusOne(as: List[Int]): List[Int] = ???
 
   def listDoubleToString(as: List[Double]): List[String] = ???
-
-  // MAP
 
   def map[A,B](as: List[A])(f: A => B): List[B] = ???
 
