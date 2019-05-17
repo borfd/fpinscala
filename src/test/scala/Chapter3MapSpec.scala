@@ -27,6 +27,14 @@ class Chapter3MapSpec extends Specification { def is = s2"""
 
 
     @TODO: write #filter using using #flatMap            $e6
+
+    @TODO: write a function that accepts two lists
+    and constructs a new list
+    by adding corresponding elements                     $e7
+
+    @TODO: generalize that function so it's
+    not specific to integers or addition                 $e8
+
   """
 
   def threeFourFiveList: List[Int] = Cons(3, Cons(4, Cons(5, Nil)))
@@ -62,6 +70,16 @@ class Chapter3MapSpec extends Specification { def is = s2"""
   def e6 =
     Chapter3Lists.filterWithFlatMap(threeFourFiveList)(_ % 2 == 0) should equalTo(
       Cons("3", Cons("5", Nil))
+    )
+
+  def e7 =
+    Chapter3Lists.addTwoLists(threeFourFiveList, threeFourFiveList) should equalTo(
+      Cons(6, Cons(8, Cons(10, Nil)))
+    )
+
+  def e8 =
+    Chapter3Lists.zipWith(threeFourFiveList, threeFourFiveList)(_ + _) should equalTo(
+      Cons(6, Cons(8, Cons(10, Nil)))
     )
 
 }

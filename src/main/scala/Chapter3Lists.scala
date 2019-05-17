@@ -54,6 +54,6 @@ object Chapter3Lists {
 
   def addTwoLists[A](as: List[A], bs: List[A]): List[A] = ???
 
-  def zipWith[A](as: List[A], bs: List[A]): List[A] = ???
+  def zipWith[A](as: List[A], bs: List[A])(f: (A, A) => A): List[A] = ???
 
 }
