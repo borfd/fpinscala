@@ -26,7 +26,7 @@ object Chapter3Lists {
     case Cons(h, t) => Cons(h, append(t, a2))
   }
 
-  // implement using foldRight
+  // FOLD
   def length[A](as: List[A]): Int = ???
 
   def foldLeft[A, B](as: List[A], z: B)(f: (B, A) => B): B = ???
@@ -35,11 +35,11 @@ object Chapter3Lists {
 
   def foldRightWithFoldLeft[A, B](as: List[A], z: B)(f: (A, B) => B): B = ???
 
-  def concat[A](as: List[List[A]]): List[A] = ???
-
   def listPlusOne(as: List[Int]): List[Int] = ???
 
   def listDoubleToString(as: List[Double]): List[String] = ???
+
+  // MAP
 
   def map[A,B](as: List[A])(f: A => B): List[B] = ???
 
@@ -48,6 +48,8 @@ object Chapter3Lists {
   def flatMap[A,B](as: List[A])(f: A => List[B]): List[B] = ???
 
   def filterWithFlatMap[A](as: List[A])(f: A => Boolean): List[A] = ???
+
+  // ZIPS
 
   def addTwoLists[A](as: List[A], bs: List[A]): List[A] = ???
 
