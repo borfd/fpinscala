@@ -8,7 +8,7 @@ object Chapter3Lists {
 
   def tail[A](xs: List[A]): List[A] = ???
 
-  def setHead[A](xs: List[A]): List[A] = ???
+  def setHead[A](newHead: A, xs: List[A]): List[A] = ???
 
   def drop[A](l: List[A], n: Int): List[A] = ???
 

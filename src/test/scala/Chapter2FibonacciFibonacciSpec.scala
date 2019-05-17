@@ -32,6 +32,8 @@ class Chapter2FibonacciFibonacciSpec extends Specification with Tables {
  This is a specification to check our implementation
  of a recursive function by computing the Fibonacci sequence.
 
+ @TODO: Implement #fib
+
  The recursive Fibonacci function must work ${
       "input" | "result" |>
         0     !    0     |

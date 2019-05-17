@@ -9,9 +9,9 @@ class Chapter2CurryAddSpec extends Specification { def is =
       into evaluating a sequence of functions,
       each with a single argument (partial application).
 
-
       So by definition, a function add(a,b,c) is a curried function
-      if the add function supports following:
+
+      @TODO: Implement #curry as such:
 
       curry(f)(1)(1) should be the same as f(1, 1) $e1
       curry(f)(1)(1) should be the same as g(1)(1) $e2

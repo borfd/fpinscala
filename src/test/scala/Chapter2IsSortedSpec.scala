@@ -1,9 +1,16 @@
 import org.specs2.Specification
 import org.specs2.mutable.Tables
 
-class Chapter2IsSortedSpec extends Specification with Tables {
-  def is =
+class Chapter2IsSortedSpec extends Specification with Tables { def is =
+
     s2"""
+
+      @TODO: implement a function #isSorted
+      which indicates whether the input is sorted
+
+      def isSorted[A](as: Array[A], ordered: (A,A) => Boolean): Boolean
+
+
       isSorted should work ${
       "input"           | "result" |>
        Array(0, 1)      !  true    |

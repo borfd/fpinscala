@@ -11,8 +11,8 @@ class Chapter2UncurryAddTest extends Specification {def is =
       each with a single argument (partial application).
 
 
-      Let's test uncurrying
-      which is the reverse transformation of curry.
+      @TODO: implement uncurrying -
+      the reverse transformation of #curry.
 
       uncurry(g)(1, 1) should be the same as g(1)(1) $e1
       uncurry(g)(1, 1) should be the same as f(1, 1) $e2
