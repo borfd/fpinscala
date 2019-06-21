@@ -26,14 +26,18 @@ class Chapter3DropItSpec extends Specification { def is = s2"""
 
   def threeFourFiveList: List[Int] = Cons(3, Cons(4, Cons(5, Nil)))
 
-  def e1 = Chapter3Lists.drop(threeFourFiveList, 1) must equalTo(Cons(4, Cons(5, Nil)))
+  def e1 =
+    Chapter3Lists.drop(threeFourFiveList, 1) must equalTo(Cons(4, Cons(5, Nil)))
 
-  def e2 = Chapter3Lists.drop(threeFourFiveList, 2) must equalTo(Cons(5, Nil))
+  def e2 =
+    Chapter3Lists.drop(threeFourFiveList, 2) must equalTo(Cons(5, Nil))
 
-  def e3 = Chapter3Lists.drop(threeFourFiveList, 3) must equalTo(Nil)
+  def e3 =
+    Chapter3Lists.drop(threeFourFiveList, 3) must equalTo(Nil)
 
   def dropTheOdds: Int => Boolean = (x: Int) => x % 2 == 0
 
-  def e4 = Chapter3Lists.dropWhile[Int](threeFourFiveList, dropTheOdds) must equalTo()
+  def e4 =
+    Chapter3Lists.dropWhile[Int](threeFourFiveList, dropTheOdds) must equalTo()
 
 }

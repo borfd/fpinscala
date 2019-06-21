@@ -6,11 +6,18 @@ case class Cons[+A](head: A, tail: List[A]) extends List[A]
 
 object Chapter3Lists {
 
+  val listOfOneArgumentWhichIsAfive: List[Int] = Cons(3, Cons(4, Cons(5, Nil)))
+
   def tail[A](xs: List[A]): List[A] = ???
 
   def setHead[A](newHead: A, xs: List[A]): List[A] = ???
 
-  def drop[A](l: List[A], n: Int): List[A] = ???
+  def drop[A](l: List[A], n: Int): List[A] = l match {
+    case _ if n == 0 => l
+    case Cons(head, rest) =>
+      drop(rest, n - 1)
+    case Nil => Nil
+  }
 
   def dropWhile[A](l: List[A], f: A => Boolean): List[A] = ???
 
@@ -28,7 +35,10 @@ object Chapter3Lists {
 
   // FOLD
 
-  def length[A](as: List[A]): Int = ???
+  def length[A](as: List[A]): Int = as match {
+    case Cons(head, tail) => 1 + length(tail)
+    case Nil => 0
+  }
 
   def foldLeft[A, B](as: List[A], z: B)(f: (B, A) => B): B = ???
 
@@ -42,11 +52,11 @@ object Chapter3Lists {
 
   def listDoubleToString(as: List[Double]): List[String] = ???
 
-  def map[A,B](as: List[A])(f: A => B): List[B] = ???
+  def map[A, B](as: List[A])(f: A => B): List[B] = ???
 
   def filter[A](as: List[A])(f: A => Boolean): List[A] = ???
 
-  def flatMap[A,B](as: List[A])(f: A => List[B]): List[B] = ???
+  def flatMap[A, B](as: List[A])(f: A => List[B]): List[B] = ???
 
   def filterWithFlatMap[A](as: List[A])(f: A => Boolean): List[A] = ???
 

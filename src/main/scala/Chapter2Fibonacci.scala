@@ -5,7 +5,9 @@ object Chapter2Fibonacci {
 
     @tailrec
     def go(i: Int, current: Int, next: Int): Int = {
-      if(i == 0) return current
+      if(i == 0) {
+        return current
+      }
 
       go(i - 1, next, current + next)
     }
