@@ -179,4 +179,18 @@ object Chapter3Lists {
     case _ => Nil
   }
 
+  def hasSubsequence[A](list: List[A], sub: List[A]): Boolean = {
+    @tailrec
+    def startsWith(as: List[A], prefix: List[A]): Boolean = (as, prefix) match {
+      case (_, Nil) => true
+      case (Cons(a, tailA), Cons(p, tailP)) if a == p => startsWith(tailA, tailP)
+      case _ => false
+    }
+
+    list match {
+      case _ if startsWith(list, sub) => true
+      case Cons(a, tail) => startsWith(tail, sub)
+      case _ => false
+    }
+  }
 }
