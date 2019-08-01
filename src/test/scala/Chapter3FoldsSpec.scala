@@ -30,8 +30,11 @@ class Chapter3FoldsSpec extends Specification { def is =
 
     foldRightWithFoldLeft([3, 4, 5], 10)(sum) should equalTo 22   $e5
 
-    appendFoldLeft([1, 2, 3], [3, 4, 5])
+    concat([1, 2, 3], [3, 4, 5])
         should equalTo [1, 2, 3, 3, 4, 5]                         $e6
+
+
+    sum([1, 2, 3]) should equalTo 6                               $e7
   """
 
   def threeFourFiveList: List[Int] = Cons(3, Cons(4, Cons(5, Nil)))
@@ -39,7 +42,7 @@ class Chapter3FoldsSpec extends Specification { def is =
   def oneTwoThree: List[Int] = Cons(1, Cons(2, Cons(3, Nil)))
 
   def e1 =
-    Chapter3Lists.length(threeFourFiveList) must equalTo(3)
+    Chapter3Lists.lengthLeftFold(threeFourFiveList) must equalTo(3)
 
   def e2 =
     Chapter3Lists.foldLeft(threeFourFiveList, 0)((acc, curr) => acc + curr) must equalTo(12)
@@ -52,7 +55,9 @@ class Chapter3FoldsSpec extends Specification { def is =
 
   def e5 = Chapter3Lists.foldRightWithFoldLeft(threeFourFiveList, 10)((acc, curr) => acc + curr) must equalTo(22)
 
-  def e6 = Chapter3Lists.appendFoldRight(oneTwoThree, threeFourFiveList) must
+  def e6 = Chapter3Lists.concat(oneTwoThree, threeFourFiveList) must
       equalTo(Cons(1, Cons(2, Cons(3, Cons(3, Cons(4, Cons(5, Nil)))))))
+
+  def e7 = Chapter3Lists.sum(oneTwoThree) must equalTo(6)
 
 }

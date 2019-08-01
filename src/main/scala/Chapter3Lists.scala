@@ -38,18 +38,27 @@ object Chapter3Lists {
     case Cons(head, tail) => Cons(newHead, tail)
   }
 
-  def append[A](a1: List[A], a2: List[A]): List[A] = a1 match {
-    case Nil => a2
-    case Cons(h, t) => Cons(h, append(t, a2))
+
+  def concat[A](a1: List[A], a2: List[A]): List[A] = {
+    def concatRec(a1: List[A], a2: List[A], buf: List[A]): List[A] = {
+      (a1, buf) match {
+        case (Nil, Nil) => a2
+        case (Nil, Cons(head, tail)) => concatRec(Nil, Cons(head, a2), tail)
+        case (Cons(head, tail), _) => concatRec(tail, a2, Cons(head, buf))
+      }
+    }
+
+    concatRec(a1, a2, Nil)
   }
 
-  def initNotTailRec[A](l: List[A]): List[A] = l match {
+
+  def init[A](l: List[A]): List[A] = l match {
     case Nil => Nil
-    case Cons(_, Nil) => Nil
+    case Cons(a, Nil) => Nil
     case Cons(head, tail) => Cons(head, init(tail))
   }
 
-  def init[A](l: List[A]): List[A] = {
+  def init2[A](l: List[A]): List[A] = {
 
     @tailrec
     def initRec(in: List[A], res: List[A]): List[A] = in match {
@@ -73,15 +82,6 @@ object Chapter3Lists {
     case Cons(x, xs) => f(x, foldRight(xs, z)(f))
   }
 
-  def length[A](as: List[A]): Int = as match {
-    case Cons(head, tail) => 1 + length(tail)
-    case Nil => 0
-  }
-
-  def lengthLeftFold[A](as: List[A]): Int = {
-    foldLeft(as, 0) { case (length, _) => length + 1 }
-  }
-
   def foldLeft[A, B](as: List[A], z: B)(f: (B, A) => B): B = {
 
     @tailrec
@@ -93,12 +93,15 @@ object Chapter3Lists {
     foldLeftRec(as, z)
   }
 
-  def lengthFoldRight[A](as: List[A]): Int = as match {
-    case Cons(head, tail) => 1 + length(tail)
-    case Nil => 0
+  def lengthLeftFold[A](as: List[A]): Int = foldLeft(as, 0) { case (acc, a) => acc + 1 }
+
+  def sum(as: List[Int]): Int = foldLeft(as, 0) {
+    _ + _
   }
 
-  def sum(as: List[Int]): Int = {
+  def lengthFoldRight[A](as: List[A]): Int = ???
+
+  def sumFoldLeft(as: List[Int]): Int = {
     foldLeft(as, 0)(_ + _)
   }
 
@@ -120,7 +123,7 @@ object Chapter3Lists {
   }
 
   def foldRightWithFoldLeft[A, B](as: List[A], z: B)(f: (A, B) => B): B = {
-    foldLeft(as, identity[B](_)) { case (fb, a) => fb.andThen(f(a, _)) } (z)
+    foldLeft(as, { b: B => b }) { case (fb, a) => fb.andThen(f(a, _)) }(z)
   }
 
   def appendFoldLeft[A](a1: List[A], a2: List[A]): List[A] = {
@@ -132,7 +135,7 @@ object Chapter3Lists {
   }
 
   def flatten[A](lists: List[List[A]]): List[A] = {
-    foldRight(lists, Nil: List[A])(append)
+    foldRight(lists, Nil: List[A])(concat)
   }
 
   // MAP + FILTER
@@ -149,15 +152,17 @@ object Chapter3Lists {
     foldRight(as, Nil: List[B]) { case (a, acc) => Cons(f(a), acc) }
   }
 
-  def filter[A](as: List[A])(f: A => Boolean): List[A] = {
+  def filter[A](as: List[A])(f: A => Boolean): List[A] =
     foldRight(as, Nil: List[A]) {
       case (a, acc) if f(a) => Cons(a, acc)
       case (_, acc) => acc
     }
-  }
+
 
   def flatMap[A, B](as: List[A])(f: A => List[B]): List[B] = {
-    foldRight(as, Nil: List[B]) { case (a, acc) => append(f(a), acc) }
+    foldRight(as, Nil: List[B]) { case (a: A, acc: List[B]) =>
+      concat(f(a), acc)
+    }
   }
 
   def filterWithFlatMap[A](as: List[A])(f: A => Boolean): List[A] = {

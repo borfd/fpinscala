@@ -7,7 +7,18 @@ object Tree {
   case class Branch[+A](left: Tree[A], right: Tree[A]) extends Tree[A]
 }
 
-object Chapter4Trees {
+
+object Chapter3Trees {
+
+  def countLeaf[A](res: Int, stack: List[Tree[A]]): Int = {
+
+    stack match {
+      case Nil => res
+      case Cons(Leaf(_), tail) => countLeaf(res + 1, tail)
+      case Cons(Branch(l, r), tail) => countLeaf(res, Cons(l, Cons(r, tail)))
+    }
+  }
+
 
   def size[A](tree: Tree[A]): Int = tree match {
     case Leaf(_) => 1
