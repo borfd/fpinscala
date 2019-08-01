@@ -11,40 +11,53 @@ class Chapter3FoldsSpec extends Specification { def is =
     can be thought of functions which accept a List
     and return a single result.
 
-    @TODO: Let us start with #length, the simplest one
-    which should give us the size of the list:                    $e1
+    Let us start with #length, the simplest one
+    which should give us the size of the list:
+    length([3, 4, 5]) should equalTo 3                            $e1
 
-    @TODO: Given the implementation of #foldRight,
+    Given the implementation of #foldRight,
     implement a tail-recursive version of #foldLeft
     using the techniques we discussed in the
     previous chapter.
 
-    foldLeft([3, 4, 5], 0)(sum) should equalTo 10                 $e2
-    foldLeft([3, 4, 5], 10)(sum) should equalTo 20                $e3
+    foldLeft([3, 4, 5], 0)(sum) should equalTo  12                $e2
+    foldLeft([3, 4, 5], 10)(sum) should equalTo 22                $e3
 
     Furthermore implement #foldRight using #foldLeft
     and #foldLeft using #foldRight :troll:
 
-    foldLeftWithFoldRight([3, 4, 5], 0)(sum) should equalTo 10    $e4
+    foldLeftWithFoldRight([3, 4, 5], 10)(sum) should equalTo 22   $e4
 
-    foldRightWithFoldLeft([3, 4, 5], 0)(sum) should equalTo 10    $e5
+    foldRightWithFoldLeft([3, 4, 5], 10)(sum) should equalTo 22   $e5
+
+    concat([1, 2, 3], [3, 4, 5])
+        should equalTo [1, 2, 3, 3, 4, 5]                         $e6
+
+
+    sum([1, 2, 3]) should equalTo 6                               $e7
   """
 
   def threeFourFiveList: List[Int] = Cons(3, Cons(4, Cons(5, Nil)))
 
+  def oneTwoThree: List[Int] = Cons(1, Cons(2, Cons(3, Nil)))
+
   def e1 =
-    Chapter3Lists.length(threeFourFiveList) must equalTo(3)
+    Chapter3Lists.lengthLeftFold(threeFourFiveList) must equalTo(3)
 
   def e2 =
-    Chapter3Lists.foldLeft(threeFourFiveList, 0)((acc, curr) => acc + curr) must equalTo(10)
+    Chapter3Lists.foldLeft(threeFourFiveList, 0)((acc, curr) => acc + curr) must equalTo(12)
 
   def e3 =
-    Chapter3Lists.foldLeft(threeFourFiveList, 10)((acc, curr) => acc + curr) must equalTo(20)
+    Chapter3Lists.foldLeft(threeFourFiveList, 10)((acc, curr) => acc + curr) must equalTo(22)
 
   def e4 =
-    Chapter3Lists.foldLeftWithFoldRight(threeFourFiveList, 10)((acc, curr) => acc + curr) must equalTo(10)
+    Chapter3Lists.foldLeftWithFoldRight(threeFourFiveList, 10)((acc, curr) => acc + curr) must equalTo(22)
 
-  def e5 =
-    Chapter3Lists.foldRightWithFoldLeft(threeFourFiveList, 10)((acc, curr) => acc + curr) must equalTo(10)
+  def e5 = Chapter3Lists.foldRightWithFoldLeft(threeFourFiveList, 10)((acc, curr) => acc + curr) must equalTo(22)
+
+  def e6 = Chapter3Lists.concat(oneTwoThree, threeFourFiveList) must
+      equalTo(Cons(1, Cons(2, Cons(3, Cons(3, Cons(4, Cons(5, Nil)))))))
+
+  def e7 = Chapter3Lists.sum(oneTwoThree) must equalTo(6)
 
 }

@@ -17,9 +17,6 @@ class Chapter3ListsHeadOrTailsSpec extends Specification { def is =
     case object Nil extends List[Nothing]
     case class Cons[+A](head: A, tail: List[A]) extends List[A]
 
-    @TODO: Implement a function #tail which
-    removes the first element from a list
-
     tail([3, 4, 5]) should give us only the tail [4, 5] $e1
 
     setHead(42, [3, 4, 5]) should give us [42, 4, 5]    $e2

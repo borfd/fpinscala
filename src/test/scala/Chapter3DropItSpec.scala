@@ -20,11 +20,11 @@ class Chapter3DropItSpec extends Specification { def is = s2"""
     drop(2, [3,4,5]) should return [5]    $e2
     drop(3, [3,4,5]) should return []     $e3
 
-    dropWhile(x => x % 2 == 0, [1,2,3,4,5])
-    should return []                      $e4
+    dropWhile(x => x % 2 == 0, [3, 4, 5])       should return [3, 4, 5]     $e4
+    dropWhile(x => x % 2 == 0, [2, 4, 3, 4, 5]) should return [3, 4, 5]     $e5
   """
 
-  def threeFourFiveList: List[Int] = Cons(3, Cons(4, Cons(5, Nil)))
+  val threeFourFiveList: List[Int] = Cons(3, Cons(4, Cons(5, Nil)))
 
   def e1 =
     Chapter3Lists.drop(threeFourFiveList, 1) must equalTo(Cons(4, Cons(5, Nil)))
@@ -38,6 +38,11 @@ class Chapter3DropItSpec extends Specification { def is = s2"""
   def dropTheOdds: Int => Boolean = (x: Int) => x % 2 == 0
 
   def e4 =
-    Chapter3Lists.dropWhile[Int](threeFourFiveList, dropTheOdds) must equalTo()
+    Chapter3Lists.dropWhile[Int](threeFourFiveList, dropTheOdds) must equalTo(threeFourFiveList)
+
+
+  val longList = Cons(2, Cons(4, threeFourFiveList)) // 2, 4, 3, 4, 5
+  def e5 =
+    Chapter3Lists.dropWhile[Int](longList, _ % 2 == 0) must equalTo(threeFourFiveList)
 
 }
