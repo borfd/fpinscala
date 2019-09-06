@@ -10,7 +10,7 @@ object Tree {
 
 object Chapter3Trees {
 
-  def countLeaf[A](res: Int, stack: List[Tree[A]]): Int = {
+  def countLeaf[A](res: Int, stack: OurList[Tree[A]]): Int = {
 
     stack match {
       case Nil => res

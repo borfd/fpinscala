@@ -43,9 +43,9 @@ object Option {
   def traverse[A, B](as: List[A])(f: A => Option[B]): Option[List[B]] = {
     def _traverse(acc: List[B], as: List[A], f: A => Option[B]): Option[List[B]] = {
       as match {
-        case Nil => Some(acc.reverse)
-        case ::(head, tl) => f(head) match {
-          case Some(get) => _traverse(get :: acc, tl, f)
+        case scala.Nil => Some(acc.reverse)
+        case head :: tail => f(head) match {
+          case Some(get) => _traverse(get :: acc, tail, f)
           case None => None
         }
       }
@@ -53,14 +53,14 @@ object Option {
     _traverse(List.empty, as, f)
   }
 
-  def traverse[A, B](as: List[A])(f: A => Option[B]): Option[List[B]] = {
-    val l = for(a <- as) yield
-      f(a) match {
-        case Some(value) => value
-        case None => return None // fail fast
-      }
-    Some(l)
-  }
+//  def traverse[A, B](as: List[A])(f: A => Option[B]): Option[List[B]] = {
+//    val l = for(a <- as) yield
+//      f(a) match {
+//        case Some(value) => value
+//        case None => return None // fail fast
+//      }
+//    Some(l)
+//  }
 
   def sequence[A](xs: List[Option[A]]): Option[List[A]] =
     traverse(xs)(identity)

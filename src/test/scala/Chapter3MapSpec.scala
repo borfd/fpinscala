@@ -50,7 +50,7 @@ class Chapter3MapSpec extends Specification { def is = s2"""
 
   """
 
-  def threeFourFiveList: List[Int] = Cons(3, Cons(4, Cons(5, Nil)))
+  def threeFourFiveList: OurList[Int] = Cons(3, Cons(4, Cons(5, Nil)))
 
   def e1 =
     Chapter3Lists.listPlusOne(threeFourFiveList) should equalTo(
