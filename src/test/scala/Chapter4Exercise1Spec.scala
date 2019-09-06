@@ -24,6 +24,10 @@ class Chapter4Exercise1Spec extends Specification {
 
     map2 with function addition should return Some(3) on (Some(1), Some(2)) $e5
     map2 with function plusTen should return None on (None, Some(2)) $e6
+
+    $sequenceForAllDefinedValue
+    $sequenceForAtLeastOneNone
+    $sequenceForEmptyList
   """
 
 
@@ -61,7 +65,7 @@ class Chapter4Exercise1Spec extends Specification {
     Some(10)
   }
 
-  def orElseSome = Some(1).orElse(returnSome10) should equalTo(Some(10))
+  def orElseSome = Some(1).orElse(returnSome10) should equalTo(Some(1))
   def orElseNone = None.orElse(returnSome10) should equalTo(Some(10))
 
   // filter
@@ -89,10 +93,12 @@ class Chapter4Exercise1Spec extends Specification {
   def e6 = map2(Some(1), None)(add) should equalTo(None)
 
   // sequence
-  def sequenceForAllDefinedValue = sequence(Seq(Some(2), Some(3))) should equalTo(Some(Seq(2, 3)))
+  def sequenceForAllDefinedValue = sequence(List(Some(2), Some(3))) should equalTo(Some(List(2, 3)))
 
-  def sequenceForAtLeastOneNone = sequence(Seq(Some(2), None)) should equalTo(None)
+  def sequenceForAtLeastOneNone = sequence(List(Some(2), None)) should equalTo(None)
 
-  def sequenceForEmptyList = sequence(Seq.empty[Option[Int]]) should equalTo(Some(Seq.empty))
+  def sequenceForEmptyList = sequence(List.empty[Option[Int]]) should equalTo(Some(Seq.empty))
+
+
 
 }
