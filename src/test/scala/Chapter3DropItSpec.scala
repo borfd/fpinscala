@@ -24,7 +24,7 @@ class Chapter3DropItSpec extends Specification { def is = s2"""
     dropWhile(x => x % 2 == 0, [2, 4, 3, 4, 5]) should return [3, 4, 5]     $e5
   """
 
-  val threeFourFiveList: List[Int] = Cons(3, Cons(4, Cons(5, Nil)))
+  val threeFourFiveList: OurList[Int] = Cons(3, Cons(4, Cons(5, Nil)))
 
   def e1 =
     Chapter3Lists.drop(threeFourFiveList, 1) must equalTo(Cons(4, Cons(5, Nil)))

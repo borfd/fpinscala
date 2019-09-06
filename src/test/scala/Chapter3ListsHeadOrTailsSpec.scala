@@ -22,7 +22,7 @@ class Chapter3ListsHeadOrTailsSpec extends Specification { def is =
     setHead(42, [3, 4, 5]) should give us [42, 4, 5]    $e2
   """
 
-  def threeFourFiveList: List[Int] = Cons(3, Cons(4, Cons(5, Nil)))
+  def threeFourFiveList: OurList[Int] = Cons(3, Cons(4, Cons(5, Nil)))
 
   def e1 =
     Chapter3Lists.tail(threeFourFiveList) must equalTo(Cons(4, Cons(5, Nil)))
