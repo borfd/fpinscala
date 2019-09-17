@@ -1,0 +1,60 @@
+import org.specs2.Specification
+
+class Chapter4EitherSpec extends Specification {
+  def is =
+    s2"""
+    One thing you may have noticed with Option is that
+    it doesn’t tell us anything about what went wrong
+    in the case of an exceptional condition.
+    All it can do is give us None, indicating that there’s no value to be had.
+    But sometimes we want to know more.
+    For example, we might want a String that gives more information,
+    or if an exception was raised, we might want to know what that error actually was.
+
+    Either has only two cases just like Option.
+    The essential difference is that both cases carry a value.
+
+    Left.map      returns error value               $e1
+    Left.flatMap  returns error value               $e2
+    Left.orElse   returns value passed in           $e3
+    Left.map2     returns error value               $e4
+    Left.sequence
+    Left.traverse
+
+    Right.map     applies the passed in function    $e5
+    Right.flatMap applies the passed in function    $e6
+    Right.orElse  returns value                     $e7
+    Right.map2    applies the passed in function    $e8
+    Right.sequence
+    Right.traverse
+  """
+
+  val exception = new RuntimeException("Something is not right")
+
+  val left = MyLeft(exception)
+  val right = MyRight("Everything is right")
+
+  def e1 =
+    left.map(_ => "Sd") must equalTo(exception)
+
+  def e2 =
+    left.flatMap(_ => Left(new RuntimeException("a new error"))) must equalTo(exception)
+
+  def e3 =
+    left.orElse(Right("return this")) must equalTo("return this")
+
+
+  def e4 = ???
+
+  def e5 =
+    right.map(_ => "returns this") must equalTo(Right("returns this"))
+
+  def e6 =
+    right.flatMap(_ => Right("returns this")) must equalTo(Right("returns this"))
+
+  def e7 =
+    right.orElse(Right("do not return this")) must equalTo (right)
+
+  def e8 =
+    ???
+}
