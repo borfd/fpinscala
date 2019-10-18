@@ -53,15 +53,6 @@ object Option {
     _traverse(List.empty, as, f)
   }
 
-//  def traverse[A, B](as: List[A])(f: A => Option[B]): Option[List[B]] = {
-//    val l = for(a <- as) yield
-//      f(a) match {
-//        case Some(value) => value
-//        case None => return None // fail fast
-//      }
-//    Some(l)
-//  }
-
   def sequence[A](xs: List[Option[A]]): Option[List[A]] =
     traverse(xs)(identity)
 

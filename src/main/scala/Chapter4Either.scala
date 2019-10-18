@@ -1,3 +1,5 @@
+import Chapter4Either.{Left, Right}
+
 object Chapter4Either {
 
   sealed trait Either[+E, +A] {
@@ -16,27 +18,43 @@ object Chapter4Either {
     def map2[EE >: E, B, C](b: Either[EE, B])(f: (A, B) => C): Either[EE, C] =
       (this, b) match {
         case (Right(a), Right(b)) => Right(f(a, b))
+        case (Left(e), _) => Left(e)
+        case (_, Left(e)) => Left(e)
+      }
+  }
+
+  object Either {
+//    def sequence[E, A](es: List[Either[E, A]]): Either[E, List[A]] = {
+    //      val zero: Either[E, List[A]] = Right(List())
+    //      es.foldLeft(zero) {
+    //        case (Right(list), Right(el)) => Right(el::list)
+    //        case (Right(_), Left(el)) => Left(el)
+    //        case (Left(err), _) => Left(err)
+    //      }.map(_.reverse)
+    //    }
+    def sequence[E, A](es: List[Either[E, A]]): Either[E, List[A]] = {
+
+      def _sequence(es: List[Either[E, A]], acc: Either[E, List[A]]): Either[E, List[A]] = {
+        es match {
+          case Right(el)::tail => _sequence(tail, acc.map(el::_))
+          case Left(err)::_ => Left(err)
+          case scala.Nil => acc.map(_.reverse)
+        }
       }
 
-    def sequence[E, A](es: List[Either[E, A]]): Either[E, List[A]]
+      _sequence(es, Right(List.empty))
+    }
 
-    def traverse[E, A, B](as: List[A])(f: A => Either[E, B]): Either[E, List[B]]
+    def traverse[E, A, B](as: List[A])(f: A => Either[E, B]): Either[E, List[B]] = {
+      sequence(as.map(f))
+    }
   }
 
   case class Left[+E](value: E) extends Either[E, Nothing] {
     override def map[B](f: Nothing => B): Either[E, B] = Left(value)
-
-    override def sequence[E, A](es: List[Either[E, A]]): Either[E, List[A]] = ???
-
-    override def traverse[E, A, B](as: List[A])(f: A => Either[E, B]): Either[E, List[B]] = ???
   }
 
   case class Right[+A](value: A) extends Either[Nothing, A] {
     override def map[B](f: A => B): Either[Nothing, B] = Right(f(value))
-
-    override def sequence[E, A](es: List[Either[E, A]]): Either[E, List[A]] = ???
-
-    override def traverse[E, A, B](as: List[A])(f: A => Either[E, B]): Either[E, List[B]] = ???
   }
-
 }

@@ -1,8 +1,10 @@
+import Chapter4Either.{Either, Left, Right}
 import org.specs2.Specification
 
-import Chapter4Either.{Either, Left, Right}
+class Chapter4EitherSpec extends Specification {
 
-class MyEitherSpec extends Specification {
+  import Chapter4Either.Either._
+
   def is =
     s2"""
     One thing you may have noticed with Option is that
@@ -19,16 +21,16 @@ class MyEitherSpec extends Specification {
     Left.map      returns error value               $e1
     Left.flatMap  returns error value               $e3
     Left.orElse   returns value passed in           $e5
-    Left.map2     returns error value (if any of the two Either is Left)
-    Left.sequence
-    Left.traverse
+    Left.map2     returns error value (if any of the two Either is Left) $e9 $e10 $e11
+    Left.sequence $e13 $e14 $e15
+    Left.traverse $e17
 
     Right.map     applies the passed in function    $e2
     Right.flatMap applies the passed in function    $e4
     Right.orElse  returns value                     $e6
     Right.map2    applies the passed in function    $e7 $e8
-    Right.sequence
-    Right.traverse
+    Right.sequence $e12
+    Right.traverse $e16
   """
 
   val exception = new RuntimeException("Something is not right")
@@ -61,9 +63,42 @@ class MyEitherSpec extends Specification {
   def e8 =
     right.map2(Left("something which is a left"))((a, b) => a + b) must equalTo(Left("something which is a left"))
 
-//  def e7 =
-//    right.orElse(Right("do not return this")) must equalTo (right)
-//
-//  def e8 =
-//    ???
+  def e9 =
+    left.map2(Right("does not matter"))((a, b) => 42) must equalTo(left)
+
+  def e10 =
+    right.map2(left)((a, b) => 42) must equalTo(left)
+
+  def e11 =
+    left.map2(Left("another left"))((a, b) => 42) must equalTo(left)
+
+  val allRigths = List(Right("firstRight"), Right("secondRight"), Right("thirdRight"))
+  val someRights = List(Right("firstRight"), Left("firstLeft"), Right("secondRight"), Left("secondLeft"))
+  val allLefts = List(Left("firstLeft"), Left("secondLeft"))
+  val empty = scala.Nil
+
+  def e12 =
+    sequence(allRigths) must equalTo(Right(List("firstRight", "secondRight", "thirdRight")))
+
+  def e13 =
+    sequence(someRights) must equalTo(Left("firstLeft"))
+
+  def e14 =
+    sequence(allLefts) must equalTo(Left("firstLeft"))
+
+  def e15 =
+    sequence(empty) must equalTo(Right(empty))
+
+  def allSmallerThan11 = List(1, 4, 2)
+  def hasBiggerThan11 = List(1, 17, 9, 2)
+
+  def filterHighNumbers
+    = (num: Int) => if (num > 11) Left("We don't like high numbers") else Right(num)
+
+  def e16 =
+    traverse(allSmallerThan11)(filterHighNumbers) must
+      equalTo(Right(allSmallerThan11))
+
+  def e17 =
+    traverse(hasBiggerThan11)(filterHighNumbers) must equalTo(Left("We don't like high numbers"))
 }
