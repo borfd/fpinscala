@@ -1,3 +1,5 @@
+import scala.annotation.tailrec
+
 object Chapter6PurelyFunctionalState {
 
   trait RNG {
@@ -18,12 +20,22 @@ object Chapter6PurelyFunctionalState {
   // Int.maxValue (inclusive)
   // handle corner case when nextInt returns Int.minValue which
   // doesn't have non-neg counter part
-  def nonNegativeInt(rng: RNG): (Int, RNG) = ???
+  def nonNegativeInt(rng: RNG): (Int, RNG) = {
+    val (int, nextRng) = rng.nextInt
+    int match {
+      case Int.MinValue => (0, nextRng)
+      case _ => (math.abs(int), nextRng)
+    }
+  }
 
   // 6.2
   // generate Double between 0 and 1, not including 1
   // can use: Int.MaxValue, x.toDouble to convert x: Int to Double
-  def double(rng: RNG): (Double, RNG) = ???
+  def double(rng: RNG): (Double, RNG) = {
+    val (int, nextRng) = nonNegativeInt(rng)
+    val double: Double = int.toDouble / (Int.MaxValue.toDouble + 1)
+    (double, nextRng)
+  }
 
   // 6.3
   /*
@@ -31,15 +43,39 @@ object Chapter6PurelyFunctionalState {
   pair, and a (Double, Double, Double) 3-tuple.
   You should be able to reuse the functions you’ve already written.
    */
-  def intDouble(rng: RNG): ((Int, Double), RNG) = ???
+  def intDouble(rng: RNG): ((Int, Double), RNG) = {
+    val (int, nextGen1) = rng.nextInt
+    val (doubleValue, nextGen2) = double(nextGen1)
 
-  def doubleInt(rng: RNG): ((Double, Int), RNG) = ???
+    ((int, doubleValue), nextGen2)
+  }
 
-  def double3(rng: RNG): ((Double, Double, Double), RNG) = ???
+  def doubleInt(rng: RNG): ((Double, Int), RNG) = {
+    val ((tuple), nextGen) = intDouble(rng)
+    (tuple.swap, nextGen)
+  }
+
+  def double3(rng: RNG): ((Double, Double, Double), RNG) = {
+    val ((d1 :: d2 :: d3 :: tail), nextRng) = randN[Double](3, rng)(double)
+    ((d1, d2, d3), nextRng)
+  }
+
+  @tailrec
+  def randN[A](n: Int, rng: RNG, acc: List[A] = List.empty[A])(f: RNG => (A, RNG)): (List[A], RNG) = {
+    if (n > 0) {
+      val (nextDouble, nextRng) = f(rng)
+      println(acc)
+      randN(n - 1, nextRng, nextDouble :: acc)(f)
+    } else {
+      (acc, rng)
+    }
+  }
 
   // 6.4
   // Write a function to generate a list of random integers.
-  def ints(count: Int)(rng: RNG): (List[Int], RNG) = ???
+  def ints(count: Int)(rng: RNG): (List[Int], RNG) = {
+    randN[Int](count, rng)(_.nextInt)
+  }
 
   type Rand[+A] = RNG => (A, RNG)
 

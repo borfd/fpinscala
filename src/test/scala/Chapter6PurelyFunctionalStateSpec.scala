@@ -43,7 +43,6 @@ class Chapter6PurelyFunctionalStateSpec extends Specification with ScalaCheck wi
     }
   }
 
-  /*
   "double" >> {
     "should return a value between 0 and < 1" >> {
       Prop.forAll { long: Long =>
@@ -120,6 +119,19 @@ class Chapter6PurelyFunctionalStateSpec extends Specification with ScalaCheck wi
   }
 
   "ints" >> {
+    "return empty list for count equals zero" >> {
+      Prop.forAll { long: Long =>
+        val rng = SimpleRNG(long)
+        ints(0)(rng)._1 must_=== List()
+      }
+    }
+    "return long list list for count equals 536870911" >> {
+      Prop.forAll { long: Long =>
+        val rng = SimpleRNG(long)
+        ints(536870911)(rng)._1 must_!== List()
+      }
+    }
+    /*
     "should return the same list of ints for the same seed" >> {
       Prop.forAll { (count: Int, long: Long) =>
         val rng = SimpleRNG(long)
@@ -131,145 +143,147 @@ class Chapter6PurelyFunctionalStateSpec extends Specification with ScalaCheck wi
         val rng = SimpleRNG(long)
         ints(count)(rng) must_!== ints(count)(rng.nextInt._2)
       }
-    }
+    }*/
   }
 
-  "doubleMap" >> {
-    "should return a value between 0 and < 1" >> {
-      Prop.forAll { long: Long =>
-        val rng = SimpleRNG(long)
-        doubleMap(rng)._1 >= 0 && doubleMap(rng)._1 < 1
-      }
-    }
-    "should return the same values for the same seed" >> {
-      Prop.forAll { long: Long =>
-        val rng = SimpleRNG(long)
-        doubleMap(rng) must_=== doubleMap(rng)
-      }
-    }
-    "should return different values for consecutive seeds" >> {
-      Prop.forAll { long: Long =>
-        val rng = SimpleRNG(long)
-        doubleMap(rng) must_!== doubleMap(rng.nextInt._2)
-      }
-    }
-  }
+  /*
 
-  "map2" >> {
-    def addition: (Int, Int) => Int = (a: Int, b: Int) => a + b
+"doubleMap" >> {
+"should return a value between 0 and < 1" >> {
+Prop.forAll { long: Long =>
+  val rng = SimpleRNG(long)
+  doubleMap(rng)._1 >= 0 && doubleMap(rng)._1 < 1
+}
+}
+"should return the same values for the same seed" >> {
+Prop.forAll { long: Long =>
+  val rng = SimpleRNG(long)
+  doubleMap(rng) must_=== doubleMap(rng)
+}
+}
+"should return different values for consecutive seeds" >> {
+Prop.forAll { long: Long =>
+  val rng = SimpleRNG(long)
+  doubleMap(rng) must_!== doubleMap(rng.nextInt._2)
+}
+}
+}
 
-    "should return the same result for same input" >> {
-      Prop.forAll { long1: Long =>
-        val rng = SimpleRNG(long1)
+"map2" >> {
+def addition: (Int, Int) => Int = (a: Int, b: Int) => a + b
 
-        map2(nonNegativeEven, nonNegativeEven)(addition)(rng) must_===
-          map2(nonNegativeEven, nonNegativeEven)(addition)(rng)
-        map2(nonNegativeEven, int)(addition)(rng) must_=== map2(nonNegativeEven, int)(addition)(rng)
-      }
-    }
+"should return the same result for same input" >> {
+Prop.forAll { long1: Long =>
+  val rng = SimpleRNG(long1)
 
-    "should return different result for consecutive rngs" >> {
-      Prop.forAll { long1: Long =>
-        val rng = SimpleRNG(long1)
+  map2(nonNegativeEven, nonNegativeEven)(addition)(rng) must_===
+    map2(nonNegativeEven, nonNegativeEven)(addition)(rng)
+  map2(nonNegativeEven, int)(addition)(rng) must_=== map2(nonNegativeEven, int)(addition)(rng)
+}
+}
 
-        map2(nonNegativeEven, int)(addition)(rng) must_!==
-          map2(nonNegativeEven, int)(addition)(rng.nextInt._2)
-      }
-    }
+"should return different result for consecutive rngs" >> {
+Prop.forAll { long1: Long =>
+  val rng = SimpleRNG(long1)
 
-    "should apply the function correctly" >> {
-      Prop.forAll { long1: Long =>
-        val rng = SimpleRNG(long1)
+  map2(nonNegativeEven, int)(addition)(rng) must_!==
+    map2(nonNegativeEven, int)(addition)(rng.nextInt._2)
+}
+}
 
-        map2(nonNegativeEven, nonNegativeEven)(addition)(rng)._1 must_=== 2 * nonNegativeEven(rng)._1
-        map2(nonNegativeEven, int)(addition)(rng)._1 must_=== nonNegativeEven(rng)._1 + int(rng)._1
-      }
-    }
-  }
+"should apply the function correctly" >> {
+Prop.forAll { long1: Long =>
+  val rng = SimpleRNG(long1)
 
-  "sequence" >> {
-    "should compute the same output for same input" >> {
-      Prop.forAll { long1: Long =>
-        val rng = SimpleRNG(long1)
-        val list = List(nonNegativeEven, int)
+  map2(nonNegativeEven, nonNegativeEven)(addition)(rng)._1 must_=== 2 * nonNegativeEven(rng)._1
+  map2(nonNegativeEven, int)(addition)(rng)._1 must_=== nonNegativeEven(rng)._1 + int(rng)._1
+}
+}
+}
 
-        sequence(list)(rng) must_=== sequence(list)(rng)
-      }
-    }
+"sequence" >> {
+"should compute the same output for same input" >> {
+Prop.forAll { long1: Long =>
+  val rng = SimpleRNG(long1)
+  val list = List(nonNegativeEven, int)
 
-    "should compute different outpot for consecutive rngs" >> {
-      Prop.forAll { long1: Long =>
-        val rng = SimpleRNG(long1)
-        val list = List(nonNegativeEven, int)
+  sequence(list)(rng) must_=== sequence(list)(rng)
+}
+}
 
-        sequence(list)(rng) must_!== sequence(list)(rng.nextInt._2)
-      }
-    }
-  }
+"should compute different outpot for consecutive rngs" >> {
+Prop.forAll { long1: Long =>
+  val rng = SimpleRNG(long1)
+  val list = List(nonNegativeEven, int)
 
-  "intsSeq" >> {
-    "should return the same list of ints for the same seed" >> {
-      Prop.forAll { (count: Int, long: Long) =>
-        val rng = SimpleRNG(long)
-        intsSeq(count)(rng) must_=== intsSeq(count)(rng)
-      }
-    }
-    "should return different lists for consecutive rngs" >> {
-      Prop.forAll { (count: Int, long: Long) =>
-        val rng = SimpleRNG(long)
-        intsSeq(count)(rng) must_!== intsSeq(count)(rng.nextInt._2)
-      }
-    }
-  }
+  sequence(list)(rng) must_!== sequence(list)(rng.nextInt._2)
+}
+}
+}
 
-  "flatMap" >> {
-    def g(intValue: Int): Rand[String] =
-      (r: RNG) => (intValue.toString, r)
+"intsSeq" >> {
+"should return the same list of ints for the same seed" >> {
+Prop.forAll { (count: Int, long: Long) =>
+  val rng = SimpleRNG(long)
+  intsSeq(count)(rng) must_=== intsSeq(count)(rng)
+}
+}
+"should return different lists for consecutive rngs" >> {
+Prop.forAll { (count: Int, long: Long) =>
+  val rng = SimpleRNG(long)
+  intsSeq(count)(rng) must_!== intsSeq(count)(rng.nextInt._2)
+}
+}
+}
 
-    "returns same output for same seed" >> {
-      Prop.forAll { long: Long =>
-        val rng = SimpleRNG(long)
-        flatMap[Int, String](int)(g)(rng) must_=== flatMap[Int, String](int)(g)(rng)
-      }
-    }
-    "should return different output for consecutive seed" >> {
-      Prop.forAll { long: Long =>
-        val rng = SimpleRNG(long)
-        flatMap[Int, String](int)(g)(rng) must_!== flatMap[Int, String](int)(g)(rng.nextInt._2)
-      }
-    }
-    "apply function correctly" >> {
-      Prop.forAll { long: Long =>
-        val rng = SimpleRNG(long)
-        flatMap[Int, String](int)(g)(rng)._1 must_=== int(rng)._1.toString
-      }
-    }
-  }
+"flatMap" >> {
+def g(intValue: Int): Rand[String] =
+(r: RNG) => (intValue.toString, r)
 
-  "nonNegativeLessThan" >> {
-    "should return same result for same seed" >> {
-      Prop.forAll { long: Long =>
-        val n = 7
-        val rng = SimpleRNG(long)
-        nonNegativeLessThan(n)(rng) must_=== nonNegativeLessThan(n)(rng)
-      }
-    }
-    "should return values less than given input n (n >= 0) and positive" >> {
-      Prop.forAll { long: Long =>
-        val n = 7
-        val rng = SimpleRNG(long)
-        nonNegativeLessThan(n)(rng)._1 >= 0 &&
-          nonNegativeLessThan(n)(rng)._1 < n
-      }
-    }
-    "should return values less than given input n (n >= 0) and positive" >> {
-      Prop.forAll {
-        (n: Int => n, long: Long) ==> n >= 0 ===>
-        val rng = SimpleRNG(long)
-        nonNegativeLessThan(n)(rng)._1 >= 0 &&
-          nonNegativeLessThan(n)(rng)._1 < n
-      }
-    }
-  }
+"returns same output for same seed" >> {
+Prop.forAll { long: Long =>
+  val rng = SimpleRNG(long)
+  flatMap[Int, String](int)(g)(rng) must_=== flatMap[Int, String](int)(g)(rng)
+}
+}
+"should return different output for consecutive seed" >> {
+Prop.forAll { long: Long =>
+  val rng = SimpleRNG(long)
+  flatMap[Int, String](int)(g)(rng) must_!== flatMap[Int, String](int)(g)(rng.nextInt._2)
+}
+}
+"apply function correctly" >> {
+Prop.forAll { long: Long =>
+  val rng = SimpleRNG(long)
+  flatMap[Int, String](int)(g)(rng)._1 must_=== int(rng)._1.toString
+}
+}
+}
+
+"nonNegativeLessThan" >> {
+"should return same result for same seed" >> {
+Prop.forAll { long: Long =>
+  val n = 7
+  val rng = SimpleRNG(long)
+  nonNegativeLessThan(n)(rng) must_=== nonNegativeLessThan(n)(rng)
+}
+}
+"should return values less than given input n (n >= 0) and positive" >> {
+Prop.forAll { long: Long =>
+  val n = 7
+  val rng = SimpleRNG(long)
+  nonNegativeLessThan(n)(rng)._1 >= 0 &&
+    nonNegativeLessThan(n)(rng)._1 < n
+}
+}
+"should return values less than given input n (n >= 0) and positive" >> {
+Prop.forAll {
+  (n: Int => n, long: Long) ==> n >= 0 ===>
+  val rng = SimpleRNG(long)
+  nonNegativeLessThan(n)(rng)._1 >= 0 &&
+    nonNegativeLessThan(n)(rng)._1 < n
+}
+}
+}
 */
 }
