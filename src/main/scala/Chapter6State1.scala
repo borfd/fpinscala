@@ -1,3 +1,5 @@
+import java.util.concurrent.ThreadLocalRandom
+
 import scala.annotation.tailrec
 
 object Chapter6State1 {
@@ -93,7 +95,9 @@ object Chapter6State1 {
   // 6.5
   // Use map to reimplement double in a more elegant way.
   // See exercise 6.2.
-  def doubleMap(rng: RNG): (Double, RNG) = ???
+  def doubleMap(rng: RNG): (Double, RNG) = {
+    map(nonNegativeInt)(_.toDouble / (Int.MaxValue.toDouble + 1))(rng)
+  }
 
   // 6.6
   /*
@@ -102,7 +106,12 @@ object Chapter6State1 {
   and a function f for combining their results,
   and returns a new action that combines them:
    */
-  def map2[A, B, C](ra: Rand[A], rb: Rand[B])(f: (A, B) => C): Rand[C] = ???
+  def map2[A, B, C](ra: Rand[A], rb: Rand[B])(f: (A, B) => C): Rand[C] = {
+    rng =>
+      val (valueA, nextRng1) = ra(rng)
+      val (valueB, nextRng2) = rb(nextRng1)
+      (f(valueA, valueB), nextRng2)
+  }
 
   def both[A, B](ra: Rand[A], rb: Rand[B]): Rand[(A, B)] = map2(ra, rb)((_, _))
 
@@ -118,18 +127,30 @@ object Chapter6State1 {
   you can use the standard library function List.fill(n)(x) to make a list with x
   repeated n times.
    */
-  def sequence[A](fs: List[Rand[A]]): Rand[List[A]] = ???
+  def sequence[A](fs: List[Rand[A]]): Rand[List[A]] = {
+    fs.foldRight(unit(List.empty[A]))(
+      (list, nextRand) => map2(list, nextRand)(_ :: _)
+    )
+  }
 
-  def intsSeq(count: Int)(rng: RNG): (List[Int], RNG) = ???
+  def intsSeq(count: Int)(rng: RNG): (List[Int], RNG) = {
+    sequence(List.fill(count)(int))(rng)
+  }
 
   // 6.8
   /*
   flatMap allows us to generate a random A with Rand[A], and then
   take that A and choose a Rand[B] based on its value.
    */
-  def flatMap[A, B](f: Rand[A])(g: A => Rand[B]): Rand[B] = ???
+  def flatMap[A, B](f: Rand[A])(g: A => Rand[B]): Rand[B] = {
+    rng =>
+      val (nextValue, nextRng) = f(rng)
+      g(nextValue)(nextRng)
+  }
 
-  def nonNegativeLessThan(n: Int): Rand[Int] = ???
+  def nonNegativeLessThan(n: Int): Rand[Int] = {
+    map(nonNegativeInt)(_ % n)(_)
+  }
 
   /* 6.9
   Reimplement map and map2 in terms of flatMap. The fact that this
