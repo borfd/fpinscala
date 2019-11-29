@@ -1,6 +1,6 @@
 import scala.annotation.tailrec
 
-object Chapter6PurelyFunctionalState {
+object Chapter6State1 {
 
   trait RNG {
     def nextInt: (Int, RNG)
@@ -64,7 +64,6 @@ object Chapter6PurelyFunctionalState {
   def randN[A](n: Int, rng: RNG, acc: List[A] = List.empty[A])(f: RNG => (A, RNG)): (List[A], RNG) = {
     if (n > 0) {
       val (nextDouble, nextRng) = f(rng)
-      println(acc)
       randN(n - 1, nextRng, nextDouble :: acc)(f)
     } else {
       (acc, rng)
@@ -89,7 +88,7 @@ object Chapter6PurelyFunctionalState {
     (f(a), rng2)
   }
 
-  def nonNegativeEven: Rand[Int] = map(nonNegativeInt)(i => i - i % 2)
+  def nonNegativeEven: Rand[Int] = map(nonNegativeInt(_))(i => i - i % 2)
 
   // 6.5
   // Use map to reimplement double in a more elegant way.
@@ -137,6 +136,5 @@ object Chapter6PurelyFunctionalState {
   is possible is what we’re referring to when we say that flatMap
   is more powerful than map and map2.
    */
-
 
 }

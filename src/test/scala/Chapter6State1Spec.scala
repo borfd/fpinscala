@@ -1,11 +1,11 @@
-import Chapter6PurelyFunctionalState._
+import Chapter6State1._
 import org.scalacheck.Prop
 import org.scalacheck.Prop._
 import org.specs2.ScalaCheck
 import org.specs2.mock.Mockito
 import org.specs2.mutable.Specification
 
-class Chapter6PurelyFunctionalStateSpec extends Specification with ScalaCheck with Mockito {
+class Chapter6State1Spec extends Specification with ScalaCheck with Mockito {
 
   val minValueRng: RNG = smartMock[RNG]
   minValueRng.nextInt returns ((Int.MinValue, SimpleRNG(1L)))
@@ -118,6 +118,7 @@ class Chapter6PurelyFunctionalStateSpec extends Specification with ScalaCheck wi
     }
   }
 
+  /*
   "ints" >> {
     "return empty list for count equals zero" >> {
       Prop.forAll { long: Long =>
@@ -145,6 +146,7 @@ class Chapter6PurelyFunctionalStateSpec extends Specification with ScalaCheck wi
       }
     }*/
   }
+*/
 
   /*
 
@@ -214,7 +216,7 @@ Prop.forAll { long1: Long =>
 "should compute different outpot for consecutive rngs" >> {
 Prop.forAll { long1: Long =>
   val rng = SimpleRNG(long1)
-  val list = List(nonNegativeEven, int)
+  val list = List(nonNegativeEven, int, int)
 
   sequence(list)(rng) must_!== sequence(list)(rng.nextInt._2)
 }
