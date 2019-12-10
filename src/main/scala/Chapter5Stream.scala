@@ -67,11 +67,15 @@ object Chapter5Stream {
       foldRight(Stream.empty[B])((el, acc) => cons(f(el),acc))
     }
 
-    def filter(f: A => Boolean): Stream[A] = ???
+    def filter(f: A => Boolean): Stream[A] = {
+      foldRight(empty[A])((h,t) =>
+        if (f(h)) cons(h, t)
+        else t)
+    }
 
-    def append[B >: A](el: => B): Stream[B] = {
-      case Stream.empty => cons(el, Stream.empty[B])
-      case Cons(head, tail) => cons(head, tail().append(el))
+    def append[B >: A](el: => B): Stream[B] = this match {
+      case Empty => cons(el, Stream.empty[B])
+      case Cons(head, tail) => cons(head(), tail().append(el))
     }
 
   }
