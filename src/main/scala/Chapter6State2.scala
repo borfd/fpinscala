@@ -1,25 +1,57 @@
 import Chapter6State1._
 
+
 object Chapter6State2 {
 
-  case class State[S, +A](run: S => (A, S))
+  case class State[S, +A](run: S => (A, S)) {
+    // 6.11
+    /*
+    Generalize the functions unit, map, map2, flatMap, and sequence.
+    Add them as meth- ods on the State case class where possible.
+    Otherwise you should put them in a State companion object.
+     */
+    def map[B](f: A => B): State[S, B] = {
+      State { state =>
+        val (a, newState) = this.run(state)
+        (f(a), newState)
+      }
+    }
+
+    def map2[B, C](fb: State[S, B])(f: (A, B) => C): State[S, C] = {
+      State { state =>
+        val (a, newState1) = this.run(state)
+        val (b, newState2) = fb.run(newState1)
+        (f(a, b), newState2)
+      }
+    }
+
+    def flatMap[B](g: A => State[S, B]): State[S, B] = {
+      State { state =>
+        val (a, newState1) = this.run(state)
+        val fb: State[S, B] = g(a)
+        val (b, newState2) = fb.run(newState1)
+        (b, newState2)
+      }
+    }
+  }
+
+  object State {
+    def unit[S, A](a: A): State[S, A] = {
+      State(state => (a, state))
+    }
+
+    def sequence[S, A](seq: List[State[S, A]]): State[S, List[A]] = {
+      seq.foldLeft(State.unit[S, List[A]](scala.Nil)) { case (accS, nextS) =>
+        for {
+          acc <- accS
+          nextA <- nextS
+        } yield nextA :: acc
+      }.map(_.reverse)
+    }
+  }
 
   type Rand[A] = State[RNG, A]
 
-  // 6.10
-  /*
-  Generalize the functions unit, map, map2, flatMap, and sequence.
-  Add them as meth- ods on the State case class where possible.
-  Otherwise you should put them in a State companion object.
-   */
-
-  //def unit[A](a: A): Rand[A] = rng => (a, rng)
-
-  def map[S, A, B](a: S => (A, S))(f: A => B): S => (B, S) = ???
-
-  def map2[A, B, C](ra: Rand[A], rb: Rand[B])(f: (A, B) => C): Rand[C] = ???
-
-  def flatMap[A, B](f: Rand[A])(g: A => Rand[B]): Rand[B] = ???
 
   def get[S]: State[S, S] = State(s => (s, s))
 
