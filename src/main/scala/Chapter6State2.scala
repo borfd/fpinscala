@@ -96,7 +96,6 @@ object Chapter6State2 {
       machine <- State.get[Machine]
       _ <- State.set {
         (input, machine) match {
-
           case (Coin, _) if machine.locked && machine.candies > 0 =>
             machine.copy(locked = false, coins = machine.coins + 1)
           case (Turn, _) if !machine.locked && machine.candies > 0 =>
