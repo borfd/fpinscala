@@ -48,18 +48,19 @@ object Chapter6State2 {
         } yield nextA :: acc
       }.map(_.reverse)
     }
+
+    /*
+    6.12: Come up with the signatures for get and set, then write their implementations.
+     */
+
+    def get[S]: State[S, S] = State(s => (s, s))
+
+    def set[S](s: S): State[S, Unit] = State(_ => ((), s))
   }
 
-  type Rand[A] = State[RNG, A]
 
-
-  def get[S]: State[S, S] = State(s => (s, s))
-
-  def set[S](s: S): State[S, Unit] = State(_ => ((), s))
-
-  // 6.11
   /*
-  Hard: To gain experience with the use of State, implement a finite state
+  6.13 (hard): To gain experience with the use of State, implement a finite state
   automaton that models a simple candy dispenser. The machine has two types
   of input: you can insert a coin, or you can turn the knob to dispense
   candy. It can be in one of two states: locked or unlocked. It also tracks
@@ -90,6 +91,26 @@ object Chapter6State2 {
 
   case class Machine(locked: Boolean, candies: Int, coins: Int)
 
-  def simulateMachine(inputs: List[Input]): State[Machine, (Int, Int)] = ???
+  private def handleInput(input: Input): State[Machine, Unit] = {
+    for {
+      machine <- State.get[Machine]
+      _ <- State.set {
+        (input, machine) match {
+
+          case (Coin, _) if machine.locked && machine.candies > 0 =>
+            machine.copy(locked = false, coins = machine.coins + 1)
+          case (Turn, _) if !machine.locked && machine.candies > 0 =>
+            machine.copy(locked = true, candies = machine.candies - 1)
+          case _ => machine
+        }
+      }
+    } yield ()
+  }
+  def simulateMachine(inputs: List[Input]): State[Machine, Int] = {
+    for {
+      _ <- State.sequence(inputs.map(handleInput))
+      machine <- State.get
+    } yield machine.coins
+  }
 
 }
