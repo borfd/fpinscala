@@ -1,5 +1,3 @@
-import java.util.concurrent.ThreadLocalRandom
-
 import scala.annotation.tailrec
 
 object Chapter6State1 {

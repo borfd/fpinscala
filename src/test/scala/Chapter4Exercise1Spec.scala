@@ -97,7 +97,7 @@ class Chapter4Exercise1Spec extends Specification {
 
   def sequenceForAtLeastOneNone = sequence(List(Some(2), None)) should equalTo(None)
 
-  def sequenceForEmptyList = sequence(List.empty[Option[Int]]) should equalTo(Some(Nil))
+  def sequenceForEmptyList = sequence(List.empty[Option[Int]]) should equalTo(Some(List()))
 
 
 
